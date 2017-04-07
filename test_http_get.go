@@ -36,7 +36,7 @@ func main() {
 		var err error
 
 		//执行同步调用
-		p.Call(func () {
+		p.Await(func () {
 			resp,err = http.Get("http://www.01happy.com/demo/accept.php?id=1")
 		})
 

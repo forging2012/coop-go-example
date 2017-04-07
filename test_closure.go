@@ -31,7 +31,7 @@ func main() {
 	var p *coop.CoopScheduler
 
 
-	p = coop.NewCoopScheduler(func (e interface{}){
+	closure := func (){
 		atomic.AddInt32(&c1,1)
 		atomic.AddInt32(&count,1)
 		c2++
@@ -46,13 +46,17 @@ func main() {
 
 		p.Await(func () {
 			time.Sleep(time.Millisecond * time.Duration(10))
-		})
-		
-		p.PostEvent(1)
+		})		
+	}
+
+
+	p = coop.NewCoopScheduler(func (e interface{}){
+		e.(func())()
+		p.PostEvent(closure)
 	})
 
 	for i := 0; i < 10000; i++ {
-		p.PostEvent(1)
+		p.PostEvent(closure)
 	}
 
 
