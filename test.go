@@ -44,7 +44,7 @@ func main() {
 			return
 		}
 
-		p.BlockCall(func () {
+		p.Call(func () {
 			time.Sleep(time.Millisecond * time.Duration(10))
 		})
 		
