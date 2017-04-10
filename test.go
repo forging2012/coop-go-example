@@ -6,11 +6,25 @@ import (
 	"sync/atomic"
 	"time"
 	"coop-go"
+	"flag"
+	"os"
+	"runtime/pprof"
+
 )
 
+var cpuprofile = flag.String("cpuprofile", "", "write cpu profile to file")
 
 func main() {
 
+    flag.Parse()
+    if *cpuprofile != "" {
+        f, err := os.Create(*cpuprofile)
+        if err != nil {
+            fmt.Printf(err.Error())
+        }
+        pprof.StartCPUProfile(f)
+        defer pprof.StopCPUProfile()
+    }
 
 	c1 := int32(0)
 	c2 := int32(0)
@@ -39,13 +53,13 @@ func main() {
 			fmt.Printf("not equal,%d,%d\n",c1,c2)
 		}
 
-		if c2 >= 30000000 {
+		if c2 >= 5000000 {
 			p.Close()
 			return
 		}
 
 		p.Await(func () {
-			time.Sleep(time.Millisecond * time.Duration(10))
+			time.Sleep(time.Millisecond * time.Duration(100))
 		})
 		
 		p.PostEvent(1)
